@@ -38,6 +38,6 @@ For a better understanding of the abbreviations:
       -- 7 headlamps
 """
 
-dataset = read_csv(filename, names=columns)
+dataset = read_csv(filename, names=columns, sep = ',')
 
 print(dataset.head())
