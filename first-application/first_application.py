@@ -13,6 +13,8 @@ from sklearn.preprocessing import Binarizer
 # loading the dataset
 filename = 'C:\\Users\\fabio\\Desktop\\glass+identification\\glass.data'
 columns = ['Id', 'Ri', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe', 'Type']
+columns_after_drop = ['Ri', 'Na', 'Mg', 'Al', 'Si', 'K', 'Ca', 'Ba', 'Fe']
+
 
 """
 
@@ -38,7 +40,8 @@ For a better understanding of the abbreviations:
       -- 7 headlamps
 """
 
-dataset = read_csv(filename, names=columns, sep=',')
+dataset_before_drop = read_csv(filename, names=columns, sep=',')
+dataset = dataset_before_drop.drop(['Id', 'Type'], axis=1)
 
 print("haad:" , dataset.head())
 
@@ -71,4 +74,68 @@ pyplot.show()
 dataset.plot(kind='density' , subplots=True, layout=(4,4), sharex=False, figsize=(14,14))
 pyplot.show()
 
+dataset.plot(kind='box', subplots=True, layout=(4,4), sharex=False, figsize=(14,14))
+pyplot.show()
 
+fig = pyplot.figure(figsize=(10,8))
+ax = fig.add_subplot(111)
+cax = ax.matshow(dataset.corr(), vmin=-1, vmax=1)
+fig.colorbar(cax)
+ticks = numpy.arange(0, 9, 1)
+ax.set_xticks(ticks)
+ax.set_yticks(ticks)
+ax.set_xticklabels(columns_after_drop)
+ax.set_yticklabels(columns_after_drop)
+pyplot.show()
+
+fig = pyplot.figure()
+ax = fig.add_subplot(111)
+cax = ax.matshow(dataset.corr(), vmin=-1, vmax=1)
+fig.colorbar(cax)
+pyplot.show()
+
+scatter_matrix(dataset)
+pyplot.figure(figsize=(20,18))
+pyplot.show()
+
+array = dataset.values
+X = array[:, 0:9]  # Select all 9 columns for X (all features)
+scaler = MinMaxScaler(feature_range=(0, 1))  # Initialize the scaler
+rescaledX = scaler.fit_transform(X)  # Scale the feature data
+set_printoptions(precision=3)  # Set print precision
+print(rescaledX[0:5, :])  # Print the first 5 rows of scaled data
+
+
+
+
+
+
+print(dataset[['Ba', 'Fe']].describe())
+
+"""
+Zeros in the Output: The presence of many zeros in the original data for both Ba and Fe leads to many zeros in the scaled output rescaledX because the scaling does not change values that are already zero.
+
+Interpretation of Zeros: This is expected behavior and indicates that a significant number of samples for both features have a value of zero. This may suggest that these features are not contributing significantly to variance in your datasetZeros in the Output: The presence of many zeros in the original data for both Ba and Fe leads to many zeros in the scaled output rescaledX because the scaling does not change values that are already zero.
+
+Interpretation of Zeros: This is expected behavior and indicates that a significant number of samples for both features have a value of zero. This may suggest that these features are not contributing significantly to variance in your dataset
+
+"""
+
+
+X = array[:, 0:9]  # Select all 9 columns for X (all features)
+scaler_standard = StandardScaler().fit(X)
+rescaled_standardX = scaler_standard.transform(X)  # Scale the feature data
+set_printoptions(precision=3)  # Set print precision
+print(rescaled_standardX[0:5, :])  # Print the first 5 rows of scaled data
+
+X = array[:, 0:9]
+scaler = Normalizer().fit(X)
+normalizedX = scaler.transform(X)
+set_printoptions(precision=3)
+print(normalizedX[0:5, :])
+
+
+binarizer = Binarizer(threshold=0.0).fit(X)
+binaryX = binarizer.transform(X)
+set_printoptions(precision=3)
+print(binaryX[0:5, :])
