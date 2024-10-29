@@ -4,7 +4,3 @@ Topics in machine learning will be applied to data mining and image understandin
 
 
 
-
-
-
-
